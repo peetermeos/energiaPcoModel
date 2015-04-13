@@ -1,0 +1,53 @@
+********************************************************************************
+**                                                                             *
+** Post-processing calculations for financial adjustments.                     *
+** The big point is that some corporate finance assumption (like internal      *
+** pricing) shift costs and revenues from one production unit to another.      *
+** Such shifts do not affect global optima, but do change the profit numbers   *
+** of respective production units                                              *
+**                                                                             *
+** Peeter Meos                                                                 *
+** Taaniel Uleksin                                                             *
+********************************************************************************
+$onDotL
+
+Positive variables
+  t_varcost_slot(sim, time_t, slot, t, product, vc)             "Tootmisüksuse muutuvkulud komponentide kaupa slotis (EUR)"
+  t_varcost_day(sim, time_t, t, product, vc)                    "Tootmisüksuse muutuvkulud komponentide kaupa paevas (EUR)"
+  t_varcost_month(sim, year, quarter, month, t, product, vc)    "Tootmisüksuse muutuvkulud komponentide kaupa kuus (EUR)"
+
+  t_varcost_perunit_slot(sim, time_t, slot, t, product, vc)    "Tootmisüksuse muutuvkulu komponentide kaupa slotis (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+  t_varcost_perunit_day(sim, time_t, t, product, vc)           "Tootmisüksuse muutuvkulu komponentide kaupa päevas (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+  t_varcost_perunit_month(sim, year, month, t, product, vc)    "Tootmisüksuse muutuvkulu komponentide kaupa kuus (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+  t_varcost_perunit_quarter(sim, year, quarter, t, product, vc)"Tootmisüksuse muutuvkulu komponentide kaupa kvartalis (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+  t_varcost_perunit_year(sim, year, t, product, vc)            "Tootmisüksuse muutuvkulu komponentide kaupa aastas (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+
+  t_sales_slot(sim, time_t, slot, t, product)                 "Tootmisüksuse müügitulu slotis (EUR)"
+  t_sales_day(sim, time_t, t, product)                        "Tootmisüksuse müügitulu päevas (EUR)"
+  t_sales_month(sim, year, quarter, month, t, product)        "Tootmisüksuse müügitulu kuus (EUR)"
+
+  t_mkas_fs_slott(sim, time_t, slot, t, k, feedstock, product)       "Tootmisüksuse muutuvkasum kütuse kohta slotis (EUR)"
+  t_mkas_fs_paev(sim, time_t, t, k, feedstock, product)              "Tootmisüksuse muutuvkasum kütuse kohta paevas (EUR)"
+  t_mkas_fs_kuu(sim, year, quarter, month, t, k, feedstock, product) "Tootmisüksuse muutuvkasum kütuse kohta kuus (EUR)"
+
+  t_marg_fs_kuu(sim, year, quarter, month, t, k, feedstock, product) "Kütuse marginaal tootmisüksuse kohta kuus (EUR/ühik toodet)"
+
+  t_contribution_slot(sim, time_t, slot, t, product)                 "Tootmisüksuse muutuvkasum slotis (EUR)"
+  t_contribution_day(sim, time_t, t, product)                        "Tootmisüksuse muutuvkasum paevas (EUR)"
+  t_contribution_month(sim, year, quarter, month, t, product)        "Tootmisüksuse muutuvkasum kuus (EUR)"
+
+  t_contribution_margin_slot(sim, time_t, slot, t, product)               "Tootmisüksuse muutuvkasum slotis (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+  t_contribution_margin_day(sim, time_t, t, product)                      "Tootmisüksuse muutuvkasum paevas (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+  t_contribution_margin_month(sim, year, month, t, product)               "Tootmisüksuse muutuvkasum kuus (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+  t_contribution_margin_quarter(sim, year, quarter, t, product)           "Tootmisüksuse muutuvkasum kvartalis (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+  t_contribution_margin_year(sim, year, t, product)                       "Tootmisüksuse muutuvkasum aastas (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+
+  t_varcost_tech_month(sim, year, quarter, month, tech, t, product, vc)   "Tootmisüksuse muutuvkulud komponentide kaupa kuus (EUR)"
+  t_varcost_perunit_tech_month(sim, year, month, tech, t, product, vc)    "Tootmisüksuse muutuvkulu komponentide kaupa kuus (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+  t_contribution_tech_month(sim, year, quarter, month, tech, t, product)  "Tootmisüksuse muutuvkasum kuus (EUR)"
+  t_contribution_margin_tech_month(sim, year, month, tech, t, product)    "Tootmisüksuse muutuvkasum kuus (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+
+  t_varcost_perunit_wofuel_month(sim, year, month, t, product)            "Tootmisüksuse muutuvkulu ilma kütuseta aastas (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+  t_varcost_perunit_NEJ_month(sim, year, month, product, vc)              "NEJ muutuvkulud komponentide kaupa kuus (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+  t_varcost_perunit_NEJ_quarter(sim, year, quarter, product, vc)          "NEJ muutuvkulud komponentide kaupa kvartalis (EUR/MWh(el), EUR/MWh(sj) või EUR/t(õli))"
+;

@@ -1,0 +1,16 @@
+barobjrng=1E75
+names=no
+heurfreq=100
+lpmethod=4
+memoryemphasis=0
+parallelmode=-1
+aggind=20
+prepass=50
+startalg=4
+subalg=4
+barcrossalg=-1
+threads=-1
+solvefinal=1
+tilim=1E75
+feasoptmode=3
+relaxfixedinfeas=1
