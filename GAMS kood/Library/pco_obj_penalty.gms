@@ -6,7 +6,7 @@
 ********************************************************************************
 
   -
-  sum(slot, heat_penalty_internal(time_t, slot)) * 100
+  sum(slot, heat_penalty_internal(time_t, slot)) * 1000
 
   -
   sum(slot, heat_penalty(time_t, slot)) * 100

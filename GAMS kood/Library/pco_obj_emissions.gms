@@ -27,12 +27,12 @@ sum((year, month, slot, t_el)$y_m_t,
        * sum((year, month)$y_m_t, lime_price(year) / 1000)
       )
 
-* CO2 from spot market or present CO2 emissions certificates
-- co2_spot_market(time_t) * sum((year, month)$y_m_t, co2_price(year))
-- sum((year, month, serial)$(y_m_t
-                            and co2_certs(serial, year, "kogus") > 0),
+* CO2 from spot market and fwd market
+- sum(serial$(sum(year, co2_certs(serial, year, "kogus")) > 0),
                co2_cert_usage(serial, time_t)
-             * co2_certs(serial, year, "hind"))
+             * sum(year, co2_certs(serial, year, "hind")))
+
+- co2_spot_market(time_t) * sum((year, month)$y_m_t, co2_price(year))
 
 * Cooling water
 -

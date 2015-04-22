@@ -47,7 +47,7 @@ $ifthen.two "%oil%" == "true"
   v_max_rg(time_t)                     "Upper bound for retort gas in time unit"
 $endif.two
 
-  v_max_rg_el(time_t, slot, t_el) 
+  v_max_rg_el(time_t, slot, t_el)
 
 $ifthen.two "%rg_division%" == "true"
   v_rg_division(time_t, slot, t_el)    "Retort gas even use in production units"
@@ -517,7 +517,8 @@ v_ht_delivery_int(time_t, slot)$time_t_s(time_t)..
  +
 * Penalty is needed for Bender's decomposition, switch off if subproblem is infeasible
 * and calculate extreme ray
- heat_penalty_internal(time_t, slot) * modified_bender
+ heat_penalty_internal(time_t, slot)
+* modified_bender
 $ifthen.three "%heat_free%" == "true"
  =l=
 $else.three

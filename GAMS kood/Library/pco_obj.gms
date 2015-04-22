@@ -32,7 +32,7 @@ $if "%oil%"           == "true" $libinclude pco_obj_oil
 $if "%storage%"       == "true" $libinclude pco_obj_storage
 $if "%logistics%"     == "true" $libinclude pco_obj_logistics
 $if "%prc%"           == "true" $libinclude pco_obj_contracts
-
+                               $$libinclude pco_obj_penalty
 
 $if "%mines%"         == "true" $libinclude pco_obj_mining
 $if set nkl                     $libinclude pco_obj_mining_nkl

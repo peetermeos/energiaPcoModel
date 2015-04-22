@@ -7,7 +7,7 @@
 
 
 Equation
-  v_co2_cert_usage(serial, year)   "Upper bound for CO2 allowance for each year"
+  v_co2_cert_usage(serial)         "Upper bound for CO2 allowance for each year"
   v_co2_emission(time_t)           "CO2 emission balance equation, split between present quotas and spot market"
   v_el_position(time_t, slot)      "Total electicity sales, split spot market and forwards' market"
 ;
@@ -20,11 +20,11 @@ Equation
 ** Peeter Meos                                                                 *
 ********************************************************************************
 
-v_co2_cert_usage(serial, year)..
-  sum((month, time_t)$(time_t_s(time_t) and y_m_t),
-                                       co2_cert_usage(serial, time_t))
+v_co2_cert_usage(serial)$(sum(year, co2_certs(serial, year, "kogus")) > 0)..
+  sum(time_t$time_t_s(time_t), co2_cert_usage(serial, time_t))
   =l=
-  co2_certs(serial, year, "kogus");
+  sum(year, co2_certs(serial, year, "kogus"))
+*  + M*M;
 ;
 
 ********************************************************************************
