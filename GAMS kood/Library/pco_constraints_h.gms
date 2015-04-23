@@ -24,7 +24,6 @@ v_co2_cert_usage(serial)$(sum(year, co2_certs(serial, year, "kogus")) > 0)..
   sum(time_t$time_t_s(time_t), co2_cert_usage(serial, time_t))
   =l=
   sum(year, co2_certs(serial, year, "kogus"))
-*  + M*M;
 ;
 
 ********************************************************************************

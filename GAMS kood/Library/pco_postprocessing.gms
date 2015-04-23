@@ -1082,6 +1082,7 @@ heide_fs_slotis.l(sim, time_t, slot, t, k, feedstock, "Elekter", em, "t")$(not s
 *Heitmete kulud eurodes
 heide_fs_slotis.l(sim, time_t, slot, t, k, feedstock, product, em, "EUR")
 =
+* Elektrile
   (heide_fs_slotis.l(sim, time_t, slot, t, k, feedstock, product, em, "t") *
   sum((year, month)$y_m_t, em_tariff(em, year)))$(sameas(product, "Elekter") or sameas(product, "Soojus") or sameas(product, "SisemineSoojus"))
   +
@@ -1089,10 +1090,13 @@ heide_fs_slotis.l(sim, time_t, slot, t, k, feedstock, product, em, "EUR")
    (
      sum((year, month)$y_m_t, co2_price_s(sim, year)) *  co2_spot_market_l(sim, time_t) / co2_usage_s(sim, time_t)
      +
-     sum((year, month, serial)$(y_m_t and co2_certs(serial, year, "kogus") > 0),  co2_certs(serial, year, "hind") * co2_cert_usage_l(sim, serial, time_t) / co2_usage_s(sim, time_t))
+     sum(serial$(sum(year, co2_certs(serial, year, "kogus")) > 0),
+          sum(year, co2_certs(serial, year, "hind")) * co2_cert_usage_l(sim, serial, time_t) / co2_usage_s(sim, time_t)
+        )
    )
   )$(co2_usage_s(sim, time_t) > 0 and (sameas(product, "Elekter") or sameas(product, "Soojus") or sameas(product, "SisemineSoojus")) and sameas(em, "co"))
   +
+* Õlile
   (heide_fs_slotis.l(sim, time_t, slot, t, k, feedstock, product, em, "t") *
   sum((t_ol, year, month, em_ol)$(y_m_t and sameas(t, t_ol) and sameas(em, em_ol)), em_tariff_ol(t_ol, em_ol, year)))$sameas(product, "oil")
   +
@@ -1100,7 +1104,7 @@ heide_fs_slotis.l(sim, time_t, slot, t, k, feedstock, product, em, "EUR")
    (
      sum((year, month)$y_m_t, co2_price_s(sim, year)) *  co2_spot_market_l(sim, time_t) / co2_usage_s(sim, time_t)
      +
-     sum((year, month, serial)$y_m_t,  co2_certs(serial, year, "hind") * co2_cert_usage_l(sim, serial, time_t) / co2_usage_s(sim, time_t))
+     sum(serial,  sum(year, co2_certs(serial, year, "hind")) * co2_cert_usage_l(sim, serial, time_t) / co2_usage_s(sim, time_t))
    )
   )$(co2_usage_s(sim, time_t) > 0 and sameas(product, "oil") and sameas(em, "co"))
 
@@ -1175,7 +1179,7 @@ emission_slot.l(sim, time_t, slot, t, product, em, "EUR")
    (
      sum((year, month)$y_m_t, co2_price_s(sim, year)) *  co2_spot_market_l(sim, time_t) / co2_usage_s(sim, time_t)
      +
-     sum((year, month, serial)$(y_m_t and co2_certs(serial, year, "kogus") > 0),  co2_certs(serial, year, "hind") * co2_cert_usage_l(sim, serial, time_t) / co2_usage_s(sim, time_t))
+     sum(serial$(sum(year, co2_certs(serial, year, "kogus")) > 0),  sum(year, co2_certs(serial, year, "hind")) * co2_cert_usage_l(sim, serial, time_t) / co2_usage_s(sim, time_t))
    )
   )$(co2_usage_s(sim, time_t) > 0 and (sameas(product, "Elekter") or sameas(product, "Soojus") or sameas(product, "SisemineSoojus")) and sameas(em, "co"))
   +
@@ -1186,7 +1190,7 @@ emission_slot.l(sim, time_t, slot, t, product, em, "EUR")
    (
      sum((year, month)$y_m_t, co2_price_s(sim, year)) *  co2_spot_market_l(sim, time_t) / co2_usage_s(sim, time_t)
      +
-     sum((year, month, serial)$y_m_t,  co2_certs(serial, year, "hind") * co2_cert_usage_l(sim, serial, time_t) / co2_usage_s(sim, time_t))
+     sum(serial,  sum(year, co2_certs(serial, year, "hind")) * co2_cert_usage_l(sim, serial, time_t) / co2_usage_s(sim, time_t))
    )
   )$(co2_usage_s(sim, time_t) > 0 and sameas(product, "oil") and sameas(em, "co"))
 
