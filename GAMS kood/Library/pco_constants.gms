@@ -10,7 +10,7 @@ Scalars
   first_year    "First year of the model"                             /2013/
   first_month   "First month of the model"                            /1/
   M             "Very big number"                                     /100000/
-  uncertainty   "Measurement uncertainty for emissions"               /1/
+*  uncertainty   "Measurement uncertainty for emissions"               /1/
   epsilon       "Very small number"                                   /0.0000001/
   st_oil_cv     "Standardised shale oil calorific value (MWh/t)"      /2.2777778/
   efficiency_shift "Efficiency shift for non-linear approximation"    /0.01/

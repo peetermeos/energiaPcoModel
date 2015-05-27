@@ -29,7 +29,9 @@ $offuelxref
 $offinclude
 $oneolcom
 
-
+option
+  Optcr=0.01
+;
 *option dmpsym;
 
 

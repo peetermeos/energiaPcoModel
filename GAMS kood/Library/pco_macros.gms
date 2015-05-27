@@ -126,7 +126,7 @@ $macro  em_level_el(time_t, slott, em, k, feedstock, t_el)                     \
                 * sum(para_lk$(ord(para_lk) = card(para_lk)),                  \
                        em_coef(em, t_el, k, feedstock, para_lk, "0"))          \
              )$(not sameas(em, "so") and not sameas(em, "no"))                 \
-        ) * uncertainty
+        ) * (1 - uncertainty(em))
 
 $macro  em_level_el_s(sim, time_t, slott, em, k, feedstock, t_el)              \
    (sum(para_lk,                                                               \
@@ -141,7 +141,7 @@ $macro  em_level_el_s(sim, time_t, slott, em, k, feedstock, t_el)              \
                 * sum(para_lk$(ord(para_lk) = card(para_lk)),                  \
                        em_coef(em, t_el, k, feedstock, para_lk, "0"))          \
              )$(not sameas(em, "so") and not sameas(em, "no"))                 \
-        ) * uncertainty
+        ) * (1 - uncertainty(em))
 
 $macro em_level_cw(time_t, slott,  t_el)                                       \
              sum(para_lk$(ord(para_lk) = card(para_lk)),                       \

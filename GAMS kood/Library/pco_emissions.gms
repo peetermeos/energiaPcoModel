@@ -76,6 +76,7 @@ $endif.two
 ;
 
 Parameter
+   uncertainty(em)                  "Measurement uncertainty for emissions"
    em_tariff(em, year)               "Emission tariffs from corp. accounting (EUR/t)"
    em_tariff_ol(t_ol, em_ol, year)   "Oil emission tariffs from corp. accounting (EUR/t)"
    em_quota(year, em)                "Emissions quota (t/year)"
@@ -90,6 +91,7 @@ Parameter
    em_cw(k, feedstock, t_el)  "Specific emission of cooling water for power production units (m3/GWh el)"
    spent_sox(year)            "Already spent SOx quota (t) (needed mostly for the fist year)"
 ;
+$load   uncertainty
 $loaddc em_fa=eh_lt em_ba=eh_th em_cw=eh_jv lime_price=lubja_hind
 $loaddc em_tariff=eh_tariif em_tariff_ol=eh_tariif_ol em_quota=eh_kvoot
 $loaddc em_coefficients_ol=eh_koefitsendid_ol hour_limit=korstna_tundide_piirang spent_sox=kulutatud_sox
