@@ -91,7 +91,9 @@ Parameter
    em_cw(k, feedstock, t_el)  "Specific emission of cooling water for power production units (m3/GWh el)"
    spent_sox(year)            "Already spent SOx quota (t) (needed mostly for the fist year)"
 ;
-$load   uncertainty
+*$load   uncertainty
+uncertainty(em) = 0;
+
 $loaddc em_fa=eh_lt em_ba=eh_th em_cw=eh_jv lime_price=lubja_hind
 $loaddc em_tariff=eh_tariif em_tariff_ol=eh_tariif_ol em_quota=eh_kvoot
 $loaddc em_coefficients_ol=eh_koefitsendid_ol hour_limit=korstna_tundide_piirang spent_sox=kulutatud_sox
