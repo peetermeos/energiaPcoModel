@@ -31,9 +31,11 @@ Equations
   v_k_compulsory_kkt(time_t)                        "Contractually binding quantity of shale to be acquired"
   v_k_min_acquisition(year, month, k, feedstock)    "Contractually binding minimum quantity of shale to be acquired"
 
+  v_k_fs_max_acq(time_t, feedstock)   
+
 * Purchase contracts
 $ifthen.two "%prc%" == "true"
-   v_fs_purchase(serial, time_t, k, feedstock)"Feedstock purchase contracts for external sources"
+  v_fs_purchase(serial, time_t, k, feedstock)"Feedstock purchase contracts for external sources"
 $endif.two
 
 * Additional constraints for fixed costs
@@ -112,8 +114,6 @@ v_fs_purchase(serial, time_t, k, feedstock)$(time_t_s(time_t)
   )
 ;
 $endif.two
-
-
 ********************************************************************************
 ** Mining and acquisition cannot exceed daily maximum capacities.              *
 **                                                                             *
@@ -124,8 +124,6 @@ $endif.two
 ** Peeter Meos                                                                 *
 ** Taaniel Uleksin                                                             *
 ********************************************************************************
-Equation v_k_fs_max_acq(time_t, feedstock);
-
 v_k_fs_max_acq(time_t, feedstock)..
    fs_mined(time_t, feedstock, feedstock, "Hange")
    =l=
@@ -168,7 +166,6 @@ v_k_fs_mined(time_t, k, feedstock)$(time_t_s(time_t)
 ** Peeter Meos                                                                 *
 ** Taaniel Uleksin                                                             *
 ********************************************************************************
-
 v_k_compulsory_kkt(time_t)$time_t_s(time_t)..
   fs_mined(time_t, "Energeetiline", "Energeetiline", "KKT")
 $ifthen.two  "%kkt_free%" == "true"
@@ -190,7 +187,6 @@ $endif.two
 ** Peeter Meos                                                                 *
 ** Taaniel Uleksin                                                             *
 ********************************************************************************
-
 v_k_min_acquisition(year, month, k, feedstock)..
   sum(time_t$(time_t_s(time_t) and y_m_t),
      sum(p2, fs_mined(time_t, p2, feedstock, k)
@@ -249,7 +245,6 @@ v_mining_dist(time_t, feedstock, k)$(time_t_s(time_t)
 **                                                                             *
 ** Peeter Meos                                                                 *
 ********************************************************************************
-
 v_aquisition_dist(time_t, feedstock)$time_t_s(time_t)..
   sum((s_k)$(mine_storage("Hange", s_k)
          and fs_k("Hange", feedstock)
@@ -271,7 +266,6 @@ v_aquisition_dist(time_t, feedstock)$time_t_s(time_t)..
 ** Peeter Meos                                                                 *
 ** Taaniel Uleksin                                                             *
 ********************************************************************************
-
 v_tailings_sum(time_t, k)$(time_t_s(time_t) and k_enrichment(k))..
 sum(feedstock$fs_k(k, feedstock), tailings_p(time_t, k, feedstock))
 =l= tailings_pct(k) * raw_shale(time_t, k);
@@ -290,7 +284,6 @@ sum(feedstock$fs_k(k, feedstock), cont_p(time_t, k, feedstock))
 ** Peeter Meos                                                                 *
 ** Taaniel Uleksin                                                             *
 ********************************************************************************
-
 v_enrichment1(time_t, k, feedstock)$(time_t_s(time_t)
                                  and fs_k(k, feedstock) and k_enrichment(k))..
   cv(feedstock, k, "MWh")  * fs_mined(time_t, "Kaevis", feedstock, k)
@@ -318,7 +311,6 @@ sieve_p(time_t, k, feedstock)
 **                                                                             *
 ** Taaniel Uleksin                                                             *
 ********************************************************************************
-
 $ifthen.two "%fc%" == "true"
 ** Opening already closed mine is not permitted
 *v_k_closure(year, k)..
@@ -344,7 +336,6 @@ $endif.two
 ** Peeter Meos                                                                 *
 ** August 2014                                                                 *
 ********************************************************************************
-
 v_perm_mining1(year, month, k, feedstock)$(perm_mining(year, month, k, feedstock) > 0)..
    sum(time_t$(time_t_s(time_t) and y_m_t),
    sum((s_k)$(mine_storage(k, s_k)
@@ -403,7 +394,6 @@ sum(p2$k_mines(k, p2), (fs_mined(time_t, p2, feedstock, k)
 ** Macros used: y_m_t - tuple connecting calendar time to model time           *
 ** Peeter Meos                                                                 *
 ********************************************************************************
-
 sales.fx(time_t, k, feedstock, t_mk)$(not max_ratio(k, feedstock, t_mk) > 0) = 0;
 *sales.up(time_t, k, feedstock, t_mk)$(max_ratio(k, feedstock, t_mk) > 0) = M*M;
 
