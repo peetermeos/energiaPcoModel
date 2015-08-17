@@ -27,22 +27,22 @@ $title Eesti Energia Production Chain Optimisation Model. ENK 2013, 2014, 2015
 **********************************************
 ** Calendar configuration (DDMMYYY)          *
 **********************************************
-$if set manual $set beg_date          01052015
-$if set manual $set end_date          31122015
+$if set manual $set beg_date          01082015
+$if set manual $set end_date          31122020
 **********************************************
 
 ********************************************************************************
 ** General optimisation model logic                                            *
 ********************************************************************************
 $if set manual $set slot                    PK   // Resolution                 *
-$if set manual $set fc                   false   // Fixed costs                *
+              $$set fc                   false   // Fixed costs                *
 *$if set manual $set fix_st            31122015  // Fixed storage at given time*
 $if set manual $set hr                   false   // Hour limits for smokestacks*
 $if set manual $set cw                   false   // Cooling water constraints  *
 $if set manual $set mkul                 false   // Variable costs calculation *
 $if set manual $set prc                   true   // Purchase contracts         *
 $if set manual $set numsim                   1   // Number of stoc.realisations*
-$if set manual $set two_stage            false   // One or two stages stoch    *
+              $$set two_stage            false   // One or two stages stoch    *
 $if set manual $set ys                   false   // General scenaria           *
               $$set hedge                false   // Hedging and fin. markets   *
 ********************************************************************************
@@ -84,9 +84,9 @@ $if set manual $set nm_marg              false  // Minimum margins enforced    *
 $if set manual $set n_price_1                0  // Min price for demand curve  *
 $if set manual $set n_price_2               20  // Max price for demand curve  *
 $if set manual $set n_price_step           0.1  // Demand curve step size      *
-$if set manual $set n_source            Estonia  // Feedstock source            *
-*$if set manual $set nk                Energeetiline  // Feedstock type        *
-*$if set manual $set nkl                Energeetiline  // Feedstock type        *
+$if set manual $set n_source           Narva1  // Feedstock source            *
+*$if set manual $set nk                 Energeetiline  // Feedstock type        *
+*$if set manual $set nkl                Energeetiline  // Feedstock type       *
 *$if set manual $set pk                Tykikivi  // Feedstock type             *
 *$if set manual $set hm
 *$if set manual $set hm_vkg                                                    *

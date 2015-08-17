@@ -317,13 +317,14 @@ max_load_ol(t_ol, year, month) = max_load_ol_s("1", t_ol, year, month);
 ** Notes: None                                                                 *
 **                                                                             *
 ********************************************************************************
-Parameter min_production(time_t);
+Parameter min_production(time_t, slot);
 
-min_production(time_t) =
+min_production(time_t, slot) =
   sum((year, month, cal_time_sub, weekday, time_hour)$(y_m_t
                              and cal_t(time_t, cal_time_sub)
                              and wkday_number_cal_sub(cal_time_sub) = ord(weekday)
-                             and (   ord(time_hour) < 8
+                             and slot_hours(slot, weekday, time_hour)
+                             and (   ord(time_hour) < 7
                                   or ord(time_hour) > 20
                                   or day_type(time_t) > 0)
                               ),
@@ -332,7 +333,8 @@ min_production(time_t) =
   sum((year, month, cal_time_sub, weekday, time_hour)$(y_m_t
                              and cal_t(time_t, cal_time_sub)
                              and wkday_number_cal_sub(cal_time_sub) = ord(weekday)
-                             and ord(time_hour) > 7
+                             and slot_hours(slot, weekday, time_hour)
+                             and ord(time_hour) > 6
                              and ord(time_hour) < 21
                              and day_type(time_t) = 0
                              ),

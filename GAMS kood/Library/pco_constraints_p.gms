@@ -19,7 +19,7 @@ Equations
   v_min_cv(time_t, t)                  "Minimum calorific value of feedstock mix allowed"
   v_delta_up_el(time_t, slot, t_el)    "Ramp up rate constraint for power production"
   v_delta_down_el(time_t, slot, t_el)  "Ramp down rate constraint for power production"
-  v_min_production_el(time_t)          "Minimal required peak and off peak load for electricity production (MW)"
+  v_min_production_el(time_t, slot)    "Minimal required peak and off peak load for electricity production (MW)"
   v_permitted_use(year, month, t, k, feedstock) "Arbitrary limitations to feedstock use"
 
 *  v_beta(time_t, slot, t_el, para_lk)  "Value of previous segment must be greater than current segment"
@@ -440,6 +440,7 @@ v_oil(time_t, t_ol)$time_t_s(time_t)..
 
 v_max_cap_oil(time_t, t_ol)$time_t_s(time_t)..
   oil(time_t, t_ol)
+*   + oil_penalty(time_t, t_ol)
   =l=
   sum((year, month)$y_m_t, max_load_ol(t_ol, year, month))
 ;
@@ -546,9 +547,10 @@ $endif.two
 ** proportionally lower than the peak load.                                    *
 **                                                                             *
 ********************************************************************************
-v_min_production_el(time_t)$(time_t_s(time_t)
-                                   and day_type(time_t) = 0)..
-     sum((year, month, slot, t_el)$y_m_t,
+v_min_production_el(time_t, slot)$(time_t_s(time_t)
+*                                   and day_type(time_t) = 0
+                                   )..
+     sum((year, month, t_el)$y_m_t,
          load_el(time_t, slot, t_el)
        * slot_length(time_t, slot, t_el)
         )
@@ -564,10 +566,10 @@ v_min_production_el(time_t)$(time_t_s(time_t)
 $ifthen.el "%el_free%" == "true"
   0
 $else.el
-* Kalvi defines peak periods from 8am to 8pm (weekdays)
+* Kalvi defines peak periods from 7am to 8pm (weekdays)
 * therefore production needs to be greater than
 * total minimum load across these hours.
-  min_production(time_t)
+  min_production(time_t, slot)
 $endif.el
 ;
 
