@@ -160,8 +160,8 @@ $libinclude pco_fixcosts
 $libinclude pco_op_planning
 $libinclude pco_guss
 
-max_ratio(k, "Madal", t) = 0;
-max_ratio(k, "Kaevis", t) = 0;
+*startup_vc(t_el) = startup_vc(t_el) /1000;
+*fs_vc("Hange", "Uttegaas", year) = 0;
 
 * In case of multiple iterations, add stochastic elements to the model
 $if not "%numsim%" == "1"                        $libinclude pco_stochastics_processes
