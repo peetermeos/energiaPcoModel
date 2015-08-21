@@ -28,7 +28,7 @@ $title Eesti Energia Production Chain Optimisation Model. ENK 2013, 2014, 2015
 ** Calendar configuration (DDMMYYY)          *
 **********************************************
 $if set manual $set beg_date          01082015
-$if set manual $set end_date          31122020
+$if set manual $set end_date          31122015
 **********************************************
 
 ********************************************************************************
@@ -159,9 +159,6 @@ $libinclude pco_hedge
 $libinclude pco_fixcosts
 $libinclude pco_op_planning
 $libinclude pco_guss
-
-*startup_vc(t_el) = startup_vc(t_el) /1000;
-*fs_vc("Hange", "Uttegaas", year) = 0;
 
 * In case of multiple iterations, add stochastic elements to the model
 $if not "%numsim%" == "1"                        $libinclude pco_stochastics_processes
