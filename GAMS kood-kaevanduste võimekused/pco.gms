@@ -28,7 +28,7 @@ $title Eesti Energia Production Chain Optimisation Model. ENK 2013, 2014, 2015
 ** Calendar configuration (DDMMYYY)          *
 **********************************************
 $if set manual $set beg_date          01012016
-$if set manual $set end_date          31122016
+$if set manual $set end_date          30062016
 **********************************************
 
 ********************************************************************************
