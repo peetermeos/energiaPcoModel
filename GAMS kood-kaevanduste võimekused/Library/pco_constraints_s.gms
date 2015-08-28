@@ -88,6 +88,20 @@ fs_mined.fx(time_t, p2, feedstock, k)$(fs_k(k, feedstock)
                                    and day_type(time_t) = 1
                                    and k_workday(k, "6") = 0) = 0;
 
+* Only allowed products will get enriched
+tailings_p.fx(time_t, k, feedstock)$(k_enrichment(k)
+                                and sum(p2,
+            enrichment_coef(p2, k, feedstock)) = 0 ) = 0;
+
+sieve_p.fx(time_t, k, feedstock)$(k_enrichment(k)
+                                and sum(p2,
+            enrichment_coef(p2, k, feedstock)) = 0 ) = 0;
+
+cont_p.fx(time_t, k, feedstock)$(k_enrichment(k)
+                                and sum(p2,
+            enrichment_coef(p2, k, feedstock)) = 0 ) = 0;
+
+
 ********************************************************************************
 ** The use of purchase contracts                                               *
 **                                                                             *
@@ -155,11 +169,14 @@ v_k_fs_mined(time_t, k, feedstock)$(time_t_s(time_t)
                      $((not sameas(k, "Hange")) and (not k_enrichment(k)))
    +
    raw_shale(time_t, k)$(k_enrichment(k))
-   =l=
+*   =l=
+ =e=
 * Daily maximal amount must be divided by working days in given month
    (sum((year, month)$y_m_t, max_mining_cap(k, feedstock, year, month)
                           / monthly_workdays(year, month, k))
    )$(sum((year, month)$y_m_t, monthly_workdays(year, month, k) > 0))
+   -
+   mining_penalty(time_t, k, feedstock)$k_mines(k, "Kaevis")
 ;
 
 ********************************************************************************
@@ -271,17 +288,22 @@ v_aquisition_dist(time_t, feedstock)$time_t_s(time_t)..
 ** Peeter Meos                                                                 *
 ** Taaniel Uleksin                                                             *
 ********************************************************************************
+
 v_tailings_sum(time_t, k)$(time_t_s(time_t) and k_enrichment(k))..
 sum(feedstock$fs_k(k, feedstock), tailings_p(time_t, k, feedstock))
 =l= tailings_pct(k) * raw_shale(time_t, k);
 
 v_sieve_sum(time_t, k)$(time_t_s(time_t) and k_enrichment(k))..
 sum(feedstock$fs_k(k, feedstock), sieve_p(time_t, k, feedstock))
-=l= sieve_pct(k) * raw_shale(time_t, k);
+*=l=
+=e= sieve_pct(k) * raw_shale(time_t, k) - sieve_penalty(time_t, k)
+;
 
 v_concentrate_sum(time_t, k)$(time_t_s(time_t) and k_enrichment(k))..
 sum(feedstock$fs_k(k, feedstock), cont_p(time_t, k, feedstock))
-=l= cont_pct(k) * raw_shale(time_t, k);
+*=l=
+=e= cont_pct(k) * raw_shale(time_t, k) - cont_penalty(time_t, k)
+;
 
 ********************************************************************************
 ** Balance equations for enrichment blending                                   *
@@ -304,8 +326,8 @@ v_enrichment2(time_t, k, feedstock)$(time_t_s(time_t)
                                  and fs_k(k, feedstock) and k_enrichment(k))..
 fs_mined(time_t, "Kaevis", feedstock, k)
 =e=
-sieve_p(time_t, k, feedstock)
-                                  + cont_p(time_t, k, feedstock)
+   sieve_p(time_t, k, feedstock)
+ + cont_p(time_t, k, feedstock)
  + tailings_p(time_t, k, feedstock)
 ;
 
