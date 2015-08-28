@@ -165,8 +165,6 @@ $load t_supply_gr_vc=t_purustamiskulu
 ** Some processings and conversions                                              *
 **                                                                               *
 **********************************************************************************
-max_load_ol_temp("ENE1", "2016", month) = 280;
-
 max_load_el_s(sim, t_el, year, month) = max_load_el_temp(t_el, year, month);
 max_load_ol_s(sim, t_ol, year, month) = max_load_ol_temp(t_ol, year, month);
 t_rg_s(sim, t_el, year, month)$(sum(time_t$y_m_t, 1) > 0) = t_rg(t_el, year, month);
@@ -187,6 +185,7 @@ Parameter turbine_loss(t_el)  "Static power loss in turbines (MW)"
   (BEJ12)                 5
 /;
 
+efficiency(t_el, "4", "a")$(efficiency(t_el, "4", "b") > 0) = efficiency(t_el, "4", "a") + turbine_loss(t_el); 
 efficiency(t_el, para_lk, "b")$(efficiency(t_el, para_lk, "b") > 0) = efficiency(t_el, para_lk, "b") + efficiency_shift;
 
 * Correct efficiencies according to minimum loads
@@ -319,13 +318,14 @@ max_load_ol(t_ol, year, month) = max_load_ol_s("1", t_ol, year, month);
 ** Notes: None                                                                 *
 **                                                                             *
 ********************************************************************************
-Parameter min_production(time_t);
+Parameter min_production(time_t, slot);
 
-min_production(time_t) =
+min_production(time_t, slot) =
   sum((year, month, cal_time_sub, weekday, time_hour)$(y_m_t
                              and cal_t(time_t, cal_time_sub)
                              and wkday_number_cal_sub(cal_time_sub) = ord(weekday)
-                             and (   ord(time_hour) < 8
+                             and slot_hours(slot, weekday, time_hour)
+                             and (   ord(time_hour) < 7
                                   or ord(time_hour) > 20
                                   or day_type(time_t) > 0)
                               ),
@@ -334,7 +334,8 @@ min_production(time_t) =
   sum((year, month, cal_time_sub, weekday, time_hour)$(y_m_t
                              and cal_t(time_t, cal_time_sub)
                              and wkday_number_cal_sub(cal_time_sub) = ord(weekday)
-                             and ord(time_hour) > 7
+                             and slot_hours(slot, weekday, time_hour)
+                             and ord(time_hour) > 6
                              and ord(time_hour) < 21
                              and day_type(time_t) = 0
                              ),
