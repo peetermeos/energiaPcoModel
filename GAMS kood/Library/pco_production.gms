@@ -185,6 +185,7 @@ Parameter turbine_loss(t_el)  "Static power loss in turbines (MW)"
   (BEJ12)                 5
 /;
 
+efficiency(t_el, "4", "a")$(efficiency(t_el, "4", "b") > 0) = efficiency(t_el, "4", "a") + turbine_loss(t_el);
 efficiency(t_el, para_lk, "b")$(efficiency(t_el, para_lk, "b") > 0) = efficiency(t_el, para_lk, "b") + efficiency_shift;
 
 * Correct efficiencies according to minimum loads
