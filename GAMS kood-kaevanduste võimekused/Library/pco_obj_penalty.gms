@@ -37,7 +37,7 @@
                        or k_workday(k, "6") = 1
                        or k_workday(k, "7") = 1)),
                      cont_penalty(time_t, k) + sieve_penalty(time_t, k)
-        ) * 2
+        ) * 100
 
 
 

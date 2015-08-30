@@ -28,7 +28,7 @@ $title Eesti Energia Production Chain Optimisation Model. ENK 2013, 2014, 2015
 ** Calendar configuration (DDMMYYY)          *
 **********************************************
 $if set manual $set beg_date          01012016
-$if set manual $set end_date          30062016
+$if set manual $set end_date          31122016
 **********************************************
 
 ********************************************************************************
@@ -97,7 +97,7 @@ $if set manual $set n_source           Narva1  // Feedstock source            *
 ** need to be changed.                                                         *
 ********************************************************************************
 $set sc                 true    // Startup costs                               *
-$set inventory          false   // End of period inventory value               *
+$set inventory          true    // End of period inventory value               *
 $set cleanings          true    // Boiler cleanings calculated                 *
 $set oil                true    // Oil production switched on                  *
 $set ht                 true    // Heat production switched on                 *
@@ -161,16 +161,7 @@ $libinclude pco_fixcosts
 $libinclude pco_op_planning
 $libinclude pco_guss
 
-*max_ratio("Estonia", "Energeetiline", "ENE1") = 1;
-*max_ratio("Estonia", "Energeetiline", "AUVERE1") = 1;
-
-*t_dp_prod("EEJ", "ENE1") = yes;
-*t_dp_prod("EEJ", "AUVERE1") = yes;
-*t_dp_storage("EEJ", "Uhendladu_M") = yes;
-*t_dp_storage("EEJ", "Uhendladu_L1") = yes;
-*t_dp_storage("EEJ", "Uhendladu_L2") = yes;
-*t_dp_storage("EEJ", "Uhendladu_L3") = yes;
-
+max_storage("Estonia_lisaladu") = 1E9;
 
 * In case of multiple iterations, add stochastic elements to the model
 $if not "%numsim%" == "1"                        $libinclude pco_stochastics_processes
