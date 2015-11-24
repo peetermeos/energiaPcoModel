@@ -130,6 +130,10 @@ rel_table(t, "mtbf") =  rel_table(t, "mtbf") * 1.10;
 
 loop((sim, t)$(rel_table(t, "mtbf") > 0 and not sameas(t, "Katlamaja")),
 * Next event is in days (ie. note division by 24)
+* The logarithm is the inverse function of expo-
+* nential distribution's CDF. That is, the inverse of CDF converts the uni-
+* formly distributed random variate to exponentially distributed
+* variate.
   next_event = -rel_table(t, "mtbf") * log(uniform(0,1))/24;
 
   loop(cal_time_sub,

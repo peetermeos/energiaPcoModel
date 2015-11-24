@@ -71,7 +71,8 @@ katelt_plokis(t_el)$(katelt_plokis(t_el) = 0) = 1;
 
 Sets
   para_kt           "Piecewise linear efficiency approximation parameters"
-  para_lk           "Piecewise linear efficiency approximation points"
+  para_lk           "Piecewise linear efficiency points"
+  eff_lk            "Piecewise linear efficiency approximation points"
   t_cl(t_el)        "Production units that use crushed limestone for emission reduction"
   t_lime(t_el)      "Production units that use lime for emission reduction"
   ol_product        "Shale oil products"
@@ -79,7 +80,7 @@ Sets
   r_num             "Maintenance serial number"
 
 ;
-$loaddc para_lk para_kt t_cl=t_killustik t_lime=t_lubi
+$loaddc eff_lk para_lk para_kt t_cl=t_killustik t_lime=t_lubi
 
 **********************************************************************************
 **                                                                               *
@@ -97,42 +98,42 @@ Parameters
   max_load_ol_s(sim, t_ol, year, month) "Installed net capacity oil / day (input is oil shale t/h)"
   max_load_ol(t_ol, year, month)        "Installed net capacity oil / day (input is oil shale t/h)"
 
-  max_load_ol_temp(t_ol, year, month) "Temporary placeholder for oil production capacity"
-  max_load_el_temp(t_el, year, month) "Temporary placeholder for power production capacity"
-  yield_oil(t_ol, year)               "Oil yield at production plant(%)"
-  min_load_el(t_el)                   "Minimal allowed load for power generation (MW)"
-  min_load_ht(t_el)                   "Minimal allowed load for heat production (MW)"
-  efficiency(t_el, para_lk, para_kt)  "Efficiencies for production units. Piecewise linear. (prim/sec)"
-  eff_lookup(t_el, para_lk, para_kt)  "Efficiency lookup table (prim/sec)"
-  ht_efficiency(t_el)                 "Heat production efficiency (MWh(ht)/MWh(fuel))"
-  delta_up(t_el)                      "Ramp up rate (MW/h)"
-  delta_down(t_el)                    "Ramp down rate (MW/h)"
-  misc_lost_pwr(t_el, year ,month)    "Miscellaneous lost production capacities (MW)"
-  lime_consumption(t_lime)            "Lime consumption rate (kg/MWh)"
-  t_rg(t_el, year, month)             "Utilisation capacity of retort gas (m3/h)"
-  rg_yield(t_ol)                      "Oil plant retort gas yield (m3/t oil shale)"
-  t_supply_vc(t, year)                "Feedstock supply variable cost (EUR/t)"
-  t_supply_gr_vc(k, feedstock, t, year)           "Optional feedstock griding costs (EUR/t)"
-  t_el_min_sum_peak(year, month)      "Minimaalne summaarne kuine elektrikoormus (MWh)"
-  t_el_min_sum_offpeak(year, month)   "Minimaalne summaarne kuine elektrikoormus (MWh)"
-  t_mx_schedule(time_t, slot, t)      "Production unit maintenance hours in time slot (h)"
-  failure_rate(t, year)               "Production unit failure rate (proportion of monthly production capacity)"
-  startup_vc(t_el)                    "Startup costs for cold start (EUR)"
-  t_mx(t_el, year)                    "Maintenance period length (days)"
-  p_days_month_oil(t_ol, year, month) "Oil plant maintenance days in month"
-  r_days_month_oil(t_ol, year, month) "Oil plant cleaning days in month"
-  el_other_vc(t_el, year)             "Other variable costs related to power production (€/MWh(el))"
-  ht_other_vc(t_el, year)             "Other variable costs related to heat production (€/MWh(heat))"
-  oil_other_vc(t_ol, year)            "Other variable costs related to oil production (€/t(oil))"
+  max_load_ol_temp(t_ol, year, month)  "Temporary placeholder for oil production capacity"
+  max_load_el_temp(t_el, year, month)  "Temporary placeholder for power production capacity"
+  yield_oil(t_ol, year)                "Oil yield at production plant(%)"
+  min_load_el(t_el)                    "Minimal allowed load for power generation (MW)"
+  min_load_ht(t_el)                    "Minimal allowed load for heat production (MW)"
+  efficiency(t_el, eff_lk, para_kt)    "Efficiencies for production units. Piecewise linear. (prim/sec)"
+  eff_lookup(t_el, eff_lk, para_kt)    "Efficiency lookup table (prim/sec)"
+  ht_efficiency(t_el)                  "Heat production efficiency (MWh(ht)/MWh(fuel))"
+  delta_up(t_el)                       "Ramp up rate (MW/h)"
+  delta_down(t_el)                     "Ramp down rate (MW/h)"
+  misc_lost_pwr(t_el, year ,month)     "Miscellaneous lost production capacities (MW)"
+  lime_consumption(t_lime)             "Lime consumption rate (kg/MWh)"
+  t_rg(t_el, year, month)              "Utilisation capacity of retort gas (m3/h)"
+  rg_yield(t_ol)                       "Oil plant retort gas yield (m3/t oil shale)"
+  t_supply_vc(t, year)                 "Feedstock supply variable cost (EUR/t)"
+  t_supply_gr_vc(k, feedstock, t, year)"Optional feedstock griding costs (EUR/t)"
+  t_el_min_sum_peak(year, month)       "Minimaalne summaarne kuine elektrikoormus (MWh)"
+  t_el_min_sum_offpeak(year, month)    "Minimaalne summaarne kuine elektrikoormus (MWh)"
+  t_mx_schedule(time_t, slot, t)       "Production unit maintenance hours in time slot (h)"
+  failure_rate(t, year)                "Production unit failure rate (proportion of monthly production capacity)"
+  startup_vc(t_el)                     "Startup costs for cold start (EUR)"
+  t_mx(t_el, year)                     "Maintenance period length (days)"
+  p_days_month_oil(t_ol, year, month)  "Oil plant maintenance days in month"
+  r_days_month_oil(t_ol, year, month)  "Oil plant cleaning days in month"
+  el_other_vc(t_el, year)              "Other variable costs related to power production (€/MWh(el))"
+  ht_other_vc(t_el, year)              "Other variable costs related to heat production (€/MWh(heat))"
+  oil_other_vc(t_ol, year)             "Other variable costs related to oil production (€/t(oil))"
   permitted_use(year, month, t, k, feedstock) "Permitted use of feedstock in production"
-  cv_min(t, year, month)              "Minimum allowed calorific value of feedstock"
-  max_ratio(k, feedstock, t)          "Maximal ratio of feedstock entering the production unit (%)"
-  t_rg_total(year, month)             "Total retort gas usage capacity (m3)"
+  cv_min(t, year, month)               "Minimum allowed calorific value of feedstock"
+  max_ratio(k, feedstock, t)           "Maximal ratio of feedstock entering the production unit (%)"
+  t_rg_total(year, month)              "Total retort gas usage capacity (m3)"
 
-  failure_s(sim, t, year)             "Adjusted failure rate"
-  t_rg_s(sim, t_el, year, month)      "Utilisation capacity of retort gas (m3/h)"
+  failure_s(sim, t, year)              "Adjusted failure rate"
+  t_rg_s(sim, t_el, year, month)       "Utilisation capacity of retort gas (m3/h)"
 
-  t_maintenance(t, r_num, r_kp)       "Maintenance scheduled"
+  t_maintenance(t, r_num, r_kp)        "Maintenance scheduled"
   oil_prod_prop(t_ol, ol_product)      "Percentage of oil product from total produce (fuel oil / gasoline)"
 ;
 
@@ -170,62 +171,83 @@ max_load_ol_s(sim, t_ol, year, month) = max_load_ol_temp(t_ol, year, month);
 t_rg_s(sim, t_el, year, month)$(sum(time_t$y_m_t, 1) > 0) = t_rg(t_el, year, month);
 
 * a output
-* b inout
-
-min_load_el("BEJ11") = 40;
-
-Parameter turbine_loss(t_el)  "Static power loss in turbines (MW)"
-/
-  (EEJ1,EEJ2,EEJ7)        8
-  (EEJ3,EEJ4)             6
-  (EEJ5,EEJ6)             6
-  (EEJ8)                  6
-  (BEJ11)                 5
-  (AUVERE1)              10
-  (BEJ12)                 5
-/;
-
-efficiency(t_el, "4", "a")$(efficiency(t_el, "4", "b") > 0) = efficiency(t_el, "4", "a") + turbine_loss(t_el);
-efficiency(t_el, para_lk, "b")$(efficiency(t_el, para_lk, "b") > 0) = efficiency(t_el, para_lk, "b") + efficiency_shift;
+* b input
 
 * Correct efficiencies according to minimum loads
-* efficiency(t_el, "3", "a") = min_koormus_el(t_el);
-efficiency(t_el, "2", "a") = efficiency(t_el, "3", "a") - 0.1;
 
-eff_lookup(t_el, para_lk, "a")$(efficiency(t_el, para_lk, "b") > 0) = efficiency(t_el, para_lk, "a");
-eff_lookup(t_el, para_lk, "b")
-                        $(efficiency(t_el, para_lk, "b") > 0
-                      and efficiency(t_el, para_lk, "a") > 0)
-      = efficiency(t_el, para_lk, "a") / efficiency(t_el, para_lk, "b");
+* For non linear efficiency estimation, correct first efficiencies up
+* and then move it down by the correction factor (turbine loss).
+* See documentation for the mathematical details.
 
-eff_lookup(t_el, para_lk, "b")
-                        $(efficiency(t_el, para_lk, "b") = 0
-                      and efficiency(t_el, para_lk, "a") > 0)
-      = eff_lookup(t_el, para_lk+1, "b")-1;
+efficiency(t_el, eff_lk, "b")$(efficiency(t_el, eff_lk, "b") > 0)
+                           = efficiency(t_el, eff_lk, "b")
+                           ;
+
+eff_lookup(t_el, eff_lk, "a")$(efficiency(t_el, eff_lk, "b") > 0)
+                           = efficiency(t_el, eff_lk, "a");
+
+eff_lookup(t_el, eff_lk, "b")
+                        $(efficiency(t_el, eff_lk, "b") > 0
+                      and efficiency(t_el, eff_lk, "a") > 0)
+      = efficiency(t_el, eff_lk, "a") / efficiency(t_el, eff_lk, "b");
+
+eff_lookup(t_el, eff_lk, "b")
+                        $(efficiency(t_el, eff_lk, "b") = 0
+                      and efficiency(t_el, eff_lk, "a") > 0)
+      = eff_lookup(t_el, eff_lk+1, "b")-1;
+
+********************************************************************************
+* The actual estimation of turbine loss and calibrated efficiencies must be done
+* via least squares (see documentation for derivation)
+********************************************************************************
+Parameter est_eff(t_el);
+Parameter est_loss(t_el);
+
+est_eff(t_el) = 1;
+est_eff(t_el)$(not sameas(t_el, "Katlamaja"))
+                       =  sum(eff_lk$(ord(eff_lk) = card(eff_lk)),
+                                      efficiency(t_el, eff_lk, "b"))
+                        ;
+
+est_loss(t_el)$(not sameas(t_el, "Katlamaja")) =
+                 ( sum(eff_lk$(ord(eff_lk) > 1), est_eff(t_el)
+                                     / eff_lookup(t_el, eff_lk, "b"))
+                 - sum(eff_lk$(ord(eff_lk) > 1), eff_lookup(t_el, eff_lk, "a")
+                                     / (eff_lookup(t_el, eff_lk, "b")
+                                     * eff_lookup(t_el, eff_lk, "b")))
+                  )
+                 / sum(eff_lk$(ord(eff_lk) > 1), 1 / (eff_lookup(t_el, eff_lk, "b")
+                                                      * eff_lookup(t_el, eff_lk, "b")))
+;
+
+est_eff(t_el)$(not sameas(t_el, "Katlamaja")) = est_eff(t_el) + ( est_loss(t_el)
+                             / sum(eff_lk$(ord(eff_lk) = card(eff_lk)),
+                                      eff_lookup(t_el, eff_lk, "b"))
+                                                                );
+*********** End of ordinary least squaresestimation *****************
 
 ht_efficiency(t_el)$(max_load_ht(t_el) = 0) = 1;
 
-t_rg_total(year, month) = sum(t_el, t_rg(t_el, year, month));
+t_rg_total(year, month)  = sum(t_el, t_rg(t_el, year, month));
 failure_s(sim, t, year)  = failure_rate(t, year);
 
 * Convert MJ/kg to MWh/t
 cv_min(t, year, month) = cv_min(t, year, month) / 3.6;
 
-
-**********************************************************************************
-**                                                                               *
-** Slots can be defined only when production units have been defined.            *
-**********************************************************************************
+********************************************************************************
+**                                                                             *
+** Slots can be defined only when production units have been defined.          *
+********************************************************************************
 
 $libinclude pco_calendar_slots
 
-**********************************************************************************
-**                                                                               *
-** Use date pairs that define maintenance schedule and create 0/1 maintenance    *
-** schedule. Input is dates in format DDMMYY.                                    *
-**                                                                               *
-** Peeter Meos                                                                   *
-**********************************************************************************
+********************************************************************************
+**                                                                             *
+** Use date pairs that define maintenance schedule and create 0/1 maintenance  *
+** schedule. Input is dates in format DDMMYY.                                  *
+**                                                                             *
+** Peeter Meos                                                                 *
+********************************************************************************
 $loaddc t_maintenance=t_remondid
 t_mx_schedule(time_t, slot, t) = 0;
 
@@ -235,29 +257,49 @@ Parameter
 ;
 
 $macro mr_day(t, r_num, type)   trunc(t_maintenance(t, r_num, type) / 1E4)
-$macro mr_month(t, r_num, type) trunc((t_maintenance(t, r_num, type) - (mr_day(t, r_num, type)  * 1E4)) / 1E2)
-$macro mr_year(t, r_num, type)  (2000 + t_maintenance(t, r_num, type) - (mr_day(t, r_num, type) * 1E4) - (mr_month(t, r_num, type) * 1E2))
 
-r_beg_time(t, r_num)     $(t_maintenance(t, r_num, 'algus') > 0) = jdate(mr_year(t, r_num, 'algus'), mr_month(t, r_num, 'algus'), mr_day(t, r_num, 'algus')) - jdate(%year_1%, 1, 1) + 1;
-r_end_time("1", t, r_num)$(t_maintenance(t, r_num, 'lopp')  > 0) = jdate(mr_year(t, r_num, 'lopp'),  mr_month(t, r_num, 'lopp'), mr_day(t, r_num, 'lopp')) - jdate(%year_1%, 1, 1) + 1;
+$macro mr_month(t, r_num, type) trunc((t_maintenance(t, r_num, type)  \
+                           - (mr_day(t, r_num, type)  * 1E4)) / 1E2)
+
+$macro mr_year(t, r_num, type)  (2000 + t_maintenance(t, r_num, type) \
+   - (mr_day(t, r_num, type) * 1E4) - (mr_month(t, r_num, type) * 1E2))
+
+r_beg_time(t, r_num)     $(t_maintenance(t, r_num, 'algus') > 0)
+  = jdate(mr_year(t, r_num, 'algus'),
+          mr_month(t, r_num, 'algus'),
+          mr_day(t, r_num, 'algus'))
+  - jdate(%year_1%, 1, 1) + 1;
+
+r_end_time("1", t, r_num)$(t_maintenance(t, r_num, 'lopp')  > 0)
+  = jdate(mr_year(t, r_num, 'lopp'),
+          mr_month(t, r_num, 'lopp'),
+          mr_day(t, r_num, 'lopp'))
+  - jdate(%year_1%, 1, 1) + 1;
 
 * Calculate day numbers for maintenance days
 t_mx_schedule(time_t, slot, t) = sum((r_num, cal_time)$(
-                                            (ord(cal_time) ge r_beg_time(t, r_num))
-                                        and (ord(cal_time) le r_end_time("1", t, r_num))
-                                        and cal_t(time_t, cal_time)),
-                                          sum((weekday, time_hour)$(
-                                              slot_hours(slot, weekday, time_hour)
-                                          and wkday_number_cal(cal_time) = ord(weekday)
-                                                    ), 1));
+                                    (ord(cal_time) ge r_beg_time(t, r_num))
+                                and (ord(cal_time) le r_end_time("1", t, r_num))
+                                and cal_t(time_t, cal_time)),
+                                sum((weekday, time_hour)$(
+                                   slot_hours(slot, weekday, time_hour)
+                                  and wkday_number_cal(cal_time) = ord(weekday)
+                                                  ), 1));
 
 * Calculate correct number of hours in slot adjusted by maintenance days
-slot_length_s(sim, time_t, slot, t) = slot_length_orig(time_t, slot, t) - t_mx_schedule(time_t, slot, t);
-slot_length_s(sim, time_t, slot, t) = slot_length_s(sim, time_t, slot, t) * (1 -  sum((year, month)$y_m_t, failure_rate(t, year)));
+slot_length_s(sim, time_t, slot, t) = slot_length_orig(time_t, slot, t) -
+                                      t_mx_schedule(time_t, slot, t);
+
+slot_length_s(sim, time_t, slot, t) = slot_length_s(sim, time_t, slot, t) *
+                   (1 -  sum((year, month)$y_m_t, failure_rate(t, year)));
+
 slot_length_s(sim, time_t, slot, t)$(slot_length_s(sim, time_t, slot, t) < 0) = 0;
 
-*slot_length_s(sim, time_t, slot, t_el)$(sum((year, month)$y_m_t, max_load_pu(t_el, year, month)) = 0) = 0;
-slot_length(time_t, slot, t_el) = sum(sim$(ord(sim) = 1), slot_length_s(sim, time_t, slot, t_el));
+*slot_length_s(sim, time_t, slot, t_el)$(sum((year, month)$y_m_t,
+*                                       max_load_pu(t_el, year, month)) = 0) = 0;
+
+slot_length(time_t, slot, t_el) = sum(sim$(ord(sim) = 1),
+                                  slot_length_s(sim, time_t, slot, t_el));
 
 **********************************************************************************
 *                                                                                *

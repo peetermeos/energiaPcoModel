@@ -9,9 +9,9 @@
 * Let's switch off bunch of listings and select CPLEX for solver
 option
 * Will not print out rows (constraints)
-  limrow = 0,
+  limrow = 1000,
 * Will not print out columns (objective function)
-  limcol = 0,
+  limcol = 1000,
   solprint = off,
   sysout = off,
 

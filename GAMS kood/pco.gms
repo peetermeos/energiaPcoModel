@@ -28,7 +28,7 @@ $title Eesti Energia Production Chain Optimisation Model. ENK 2013, 2014, 2015
 ** Calendar configuration (DDMMYYY)          *
 **********************************************
 $if set manual $set beg_date          01012016
-$if set manual $set end_date          31122016
+$if set manual $set end_date          31122020
 **********************************************
 
 ********************************************************************************
@@ -45,6 +45,7 @@ $if set manual $set numsim                   1   // Number of stoc.realisations*
               $$set two_stage            false   // One or two stages stoch    *
 $if set manual $set ys                   false   // General scenaria           *
               $$set hedge                false   // Hedging and fin. markets   *
+$if set manual $set debug                true    // Debug option for solver    *
 ********************************************************************************
 
 **********************************************
@@ -160,17 +161,6 @@ $libinclude pco_hedge
 $libinclude pco_fixcosts
 $libinclude pco_op_planning
 $libinclude pco_guss
-
-*max_ratio("Estonia", "Energeetiline", "ENE1") = 1;
-*max_ratio("Estonia", "Energeetiline", "AUVERE1") = 1;
-
-*t_dp_prod("EEJ", "ENE1") = yes;
-*t_dp_prod("EEJ", "AUVERE1") = yes;
-*t_dp_storage("EEJ", "Uhendladu_M") = yes;
-*t_dp_storage("EEJ", "Uhendladu_L1") = yes;
-*t_dp_storage("EEJ", "Uhendladu_L2") = yes;
-*t_dp_storage("EEJ", "Uhendladu_L3") = yes;
-
 
 * In case of multiple iterations, add stochastic elements to the model
 $if not "%numsim%" == "1"                        $libinclude pco_stochastics_processes

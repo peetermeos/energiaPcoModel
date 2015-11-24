@@ -79,7 +79,6 @@ $endif.two
 ** Discrete decision variables describing production                           *
 ** Peeter Meos                                                                 *
 ********************************************************************************
-
 Binary variables
   k_alpha(time_t, t_el)                "Minimum component for power load (MWh/h)"
 

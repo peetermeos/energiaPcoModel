@@ -295,14 +295,14 @@ sum(feedstock$fs_k(k, feedstock), tailings_p(time_t, k, feedstock))
 
 v_sieve_sum(time_t, k)$(time_t_s(time_t) and k_enrichment(k))..
 sum(feedstock$fs_k(k, feedstock), sieve_p(time_t, k, feedstock))
-*=l=
-=e= sieve_pct(k) * raw_shale(time_t, k) - sieve_penalty(time_t, k)
+=e=
+ sieve_pct(k) * raw_shale(time_t, k) - sieve_penalty(time_t, k)
 ;
 
 v_concentrate_sum(time_t, k)$(time_t_s(time_t) and k_enrichment(k))..
 sum(feedstock$fs_k(k, feedstock), cont_p(time_t, k, feedstock))
-*=l=
-=e= cont_pct(k) * raw_shale(time_t, k) - cont_penalty(time_t, k)
+=e=
+ cont_pct(k) * raw_shale(time_t, k) - cont_penalty(time_t, k)
 ;
 
 ********************************************************************************

@@ -11,7 +11,7 @@
 **  Peeter Meos                                                                *
 ********************************************************************************
 
-Equations  v_objective_function                    "Overall objective function (EUR)";
+Equations  v_objective_function              "Overall objective function (EUR)";
 
 v_objective_function..
   total_profit =e= sum(time_t$time_t_s(time_t),
@@ -23,7 +23,7 @@ $libinclude pco_obj_emissions
 $libinclude pco_obj_supply
 $libinclude pco_obj_acquisitions
 
-$if not "%two_stage" == "true" $if not "%num_sim%" == "1" $libinclude pco_obj_penalty
+*$if not "%two_stage" == "true" $if not "%num_sim%" == "1" $libinclude pco_obj_penalty
 
 $if "%sc%"            == "true" $libinclude pco_obj_startup
 $if "%ht%"            == "true" $libinclude pco_obj_heat

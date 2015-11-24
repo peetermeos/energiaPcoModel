@@ -104,6 +104,7 @@ sieve_cv(k) = sieve_cv(k) / 3.6;
 * Calculate variable costs for mines without enrichment plant
 fs_vc(k, feedstock, year)$(not k_enrichment(k)
                                               and not sameas(k, "Hange")
+                                              and fs_vc(k, feedstock, year) = 0
                                               and fs_k(k, feedstock)
                                               )
   = sum(p2$(k_mines(k, p2)

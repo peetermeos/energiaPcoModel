@@ -113,7 +113,7 @@ v_fs_purchase(serial, time_t, k, feedstock)$(time_t_s(time_t)
 * Since purchased fuel is delivered to the gate of the production unit and
 * never stored, then the only inaccuracy is in fuel supply costs, which
 * is not significant enough to worry too much about.
-  / (days_in_month_m(year, month))
+  / (days_in_month_l(year, month))
   / 24
   * sum(slot, smax(t_mk, slot_length_orig(time_t, slot, t_mk)))
   )

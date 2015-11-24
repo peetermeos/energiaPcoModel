@@ -67,7 +67,7 @@ $endif.two
   heat_penalty(time_t, slot)           "Penalty variable for heat production requirement (EUR)"
   heat_penalty_internal(time_t, slot)  "Penalty variable for inernal heat production requirement (EUR)"
   el_penalty(time_t)                   "Penalty variable for power production requirement (EUR)"
-  oil_penalty(time_t, t_ol)                   "Penalty variable for oil production requirement (EUR)"
+  oil_penalty(time_t)                  "Penalty variable for oil production requirement (EUR)"
 
   t_cleaning_s(time_t, t_el)           "Day counter since last boiler cleaning (days)"
 ;

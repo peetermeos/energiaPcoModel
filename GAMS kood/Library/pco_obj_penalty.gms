@@ -15,7 +15,7 @@
   el_penalty(time_t) * 10
 
   -
-  sum(t_ol, oil_penalty(time_t, t_ol)) * 1000000
+  oil_penalty(time_t) * M
 
 
 

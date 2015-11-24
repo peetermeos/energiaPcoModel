@@ -145,9 +145,12 @@ hh_coef("no", t_el, k, feedstock, para_lk) = hh_no(k, feedstock, para_lk, t_el) 
 * Levels for instataneous emissions are 0, 40, 120, 145 (at MW net power)
 hh_q(t_el, "1") = 0;
 hh_q(t_el, "2") = eff_lookup(t_el, "3", "b") / eff_lookup(t_el, "3", "a")   * 40;
-hh_q(t_el, "3") = (eff_lookup(t_el, "4", "b") + eff_lookup(t_el, "3", "b"))
-                / (eff_lookup(t_el, "4", "a") + eff_lookup(t_el, "3", "a")) * 120;
-hh_q(t_el, "4") = eff_lookup(t_el, "4", "b") / eff_lookup(t_el, "4", "a")   * efficiency(t_el, "4", "a");
+
+hh_q(t_el, "3") = (max_eff(t_el, "b") + eff_lookup(t_el, "3", "b"))
+                / (max_eff(t_el, "a") + eff_lookup(t_el, "3", "a")) * 120;
+
+hh_q(t_el, "4") = max_eff(t_el, "b") / max_eff(t_el, "a")
+       * sum(eff_lk$(ord(eff_lk) = card(eff_lk)), efficiency(t_el, eff_lk, "a"));
 
 * Since we don't have these yet, for sake of development and testing
 * we are hardcoding 400 mg/m3 for SOx and NOx for years 2016 onwards

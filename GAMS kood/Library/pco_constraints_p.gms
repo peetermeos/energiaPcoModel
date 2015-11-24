@@ -47,7 +47,9 @@ $ifthen.two "%oil%" == "true"
   v_max_rg(time_t)                     "Upper bound for retort gas in time unit"
 $endif.two
 
-  v_max_rg_el(time_t, slot, t_el)
+  v_max_rg_el(time_t, slot, t_el)      "Maximal use of retort gas"
+  v_even_rg(time_t, slot, t_el)        "Even use retort gas ove the time period (ie. day)"
+  v_max_rg_ol(time_t)                  "Requirement to have sufficient burning capacity for retort gas"
 
 $ifthen.two "%rg_division%" == "true"
   v_rg_division(time_t, slot, t_el)    "Retort gas even use in production units"
@@ -83,6 +85,7 @@ $endif.two
   v_lambda_z(time_t, slot, t_el, k, feedstock) "Coupling between unit commitment and emissions"
 ;
 
+alias(slot2, slot);
 
 ********************************************************************************
 ** For constraints that are not interesting enough to calculate shadow prices  *
@@ -94,6 +97,7 @@ $ifthen.two "%oil%" == "false"
 oil.up(time_t, t_ol) = 0;
 $endif.two
 
+lambda_p.up(time_t, slot, t_el) = 1;
 load_el_u(sim, time_t, slot, t_el) = +INF;
 load_el_u(sim, time_t, slot, t_el)
                     $(slot_length_s(sim, time_t, slot, t_el) = 0) = 0;
@@ -107,16 +111,65 @@ load_ht.up(time_t, slot, t_el) = max_load_ht(t_el);
 $endif.two
 
 ********************************************************************************
-** Provide some basic cuts for the solution space for Q, lime and crushed stone*
+** Retort gas consumer must not exceed the consumption capacity of the gas     *
+**                                                                             *
 ** Peeter Meos                                                                 *
 ********************************************************************************
 v_max_rg_el(time_t, slot, t_el)$(time_t_s(time_t))..
-sum(para_lk, z_emission(time_t, slot, "Hange", "Uttegaas", t_el, para_lk))
-                                                 $(cv("Uttegaas", "Hange", "MWh") > 0)
+     q(time_t, slot, "Hange", "Uttegaas", t_el)
      =l= sum((year, month)$y_m_t, t_rg(t_el, year, month))
                               * cv("Uttegaas", "Hange", "MWh")
 ;
 
+********************************************************************************
+** Always must have enough burning capacity for retort gas, compared to oil    *
+** production capacity                                                         *
+**                                                                             *
+** Peeter Meos                                                                 *
+** 12. November 2015                                                           *
+********************************************************************************
+v_max_rg_ol(time_t)$(time_t_s(time_t))..
+  sum((year, month, t_el)$y_m_t,
+                 t_rg(t_el, year, month)
+               * k_alpha(time_t, t_el))
+
+  +
+  oil_penalty(time_t)
+  =g=
+  sum(t_ol,
+    sum((month, year)$y_m_t, max_load_ol(t_ol, year, month))
+    / sum(slot, slot_length(time_t, slot, t_ol))
+    / sum((month, year)$y_m_t, yield_oil(t_ol, year))
+    * rg_yield(t_ol)
+    )
+;
+
+********************************************************************************
+** Retort gas is produced in daily resolution and can be used intra-day        *
+** We need additional constraint to ensure that off-peak gas is not saved      *
+** for peak period production.                                                 *
+** Essentially every hour of production must get same amount of gas.           *
+**                                                                             *
+** Peeter Meos                                                                 *
+********************************************************************************
+
+v_even_rg(time_t, slot, t_el)
+                  $(time_t_s(time_t)
+              and sum(slot2, slot_length(time_t, slot2, t_el)) >0)..
+
+  q(time_t, slot, "Hange", "Uttegaas", t_el)
+  =e=
+
+  sum(slot2, q(time_t, slot2, "Hange", "Uttegaas", t_el)
+                  * slot_length(time_t, slot2, t_el))
+  /
+  sum(slot2, slot_length(time_t, slot2, t_el))
+;
+
+********************************************************************************
+** Provide some basic cuts for the solution space for Q, lime and crushed stone*
+** Peeter Meos                                                                 *
+********************************************************************************
 $ifthen.two "%l_k_invoked%" == "true"
   add_k.up(time_t, slot, t_el, k_level)   = 0;
   add_l.up(time_t, slot, t_el, l_level)   = 0;
@@ -204,6 +257,7 @@ v_delta_up_el(time_t, slot, t_el)$(time_t_s(time_t)
 v_delta_down_el(time_t, slot, t_el)$(time_t_s(time_t)
            and not sameas(t_el, "Katlamaja")
            and delta_down(t_el) > 0
+           and slot_length(time_t, slot, t_el)
            and not (ord(time_t) eq 1 and ord(slot) eq 1) and (not t_ol(t_el)))..
 
   q_out(time_t, slot, t_el) + delta_down(t_el)
@@ -236,7 +290,7 @@ v_load_balance(time_t, slot, t_el)$(time_t_s(time_t)
   q_in(time_t, slot, t_el)
   +
   load_ht(time_t, slot, t_el) / ht_efficiency(t_el)
-  =e=
+  =l=
   q_out(time_t, slot, t_el)
 ;
 
@@ -247,8 +301,8 @@ v_load_balance(time_t, slot, t_el)$(time_t_s(time_t)
 ********************************************************************************
 $ifthen.three "%oil%" == "true"
 v_max_rg(time_t)$time_t_s(time_t)..
-  sum((slot, t_el), q(time_t, slot, "Hange", "Uttegaas", t_el)
-                  * slot_length(time_t, slot, t_el))
+  sum(t_el, sum(slot, q(time_t, slot, "Hange", "Uttegaas", t_el)
+                  * slot_length(time_t, slot, t_el)))
 
 $ifthen.two "%rg_balance%" == "true"
   =e=
@@ -256,11 +310,9 @@ $else.two
   =l=
 $endif.two
 
-* See $ifthen jubin lülitab tootmisüksuste laodusid sisse välja
-* Sisuliselt kui ladudest rongi peale toodet laadida ei saa,
-* pole mõtet ka ladusid kasutada
-* -Peeter Meos
-  sum((k, feedstock, t_ol), to_production(time_t, k, feedstock, t_ol)
+  sum(t_ol,
+*      sum((k, feedstock), to_production(time_t, k, feedstock, t_ol))
+      oil(time_t, t_ol) / sum((month, year)$y_m_t, yield_oil(t_ol, year))
     * rg_yield(t_ol)
     * cv("Uttegaas", "Hange", "MWh"))
 ;
@@ -328,9 +380,9 @@ v_fs_mix(time_t, k, feedstock, t_el)$((not t_ol(t_el))
 ********************************************************************************
 v_fs_max_content(time_t, slot, k, feedstock, t_el)
                    $(time_t_s(time_t)
-                             and fs_k(k, feedstock)
+                             and (fs_k(k, feedstock) or sameas(feedstock, "Uttegaas"))
                              and max_ratio(k, feedstock, t_el) > 0)..
-  q(time_t, slot, k, feedstock, t_el)$(max_ratio(k, feedstock, t_el) > 0)
+  q(time_t, slot, k, feedstock, t_el)$max_ratio(k, feedstock, t_el)
   =l=
   sum((k2, p2)$(max_ratio(k2, p2, t_el) > 0),
      q(time_t, slot, k2, p2, t_el))
@@ -642,7 +694,7 @@ t_cleaning.up(time_t, t_el)$(t_tech("CFB", t_el)) = 0;
 * Ühe nädala sisse peab jääma vähemalt üks katla puhastus
 * See peaks tekitama iga 7 tööpäeva sisse ühe puhastuspäeva
 * iga puhastus annab meile 6 tööpäeva
-alias(slot2, slot);
+
 
 ********************************************************************************
 ** Boiler is cleaned once in two weeks. If we have two boiler units, then      *
@@ -765,7 +817,7 @@ v_permitted_use(year, month, t, k, feedstock)$(sum((k2, p2),
 ** Peeter Meos, 22. august 2014                                                *
 ********************************************************************************
 
-lambda_p.up(time_t, slot, t_el) = 1;
+*lambda_p.up(time_t, slot, t_el) = 1;
 k_alpha.up(time_t, t_el) = 1;
 
 v_beta1(time_t, slot, t_el)$(time_t_s(time_t)
@@ -793,7 +845,6 @@ v_unit_commitment(time_t, slot, t_el)$(time_t_s(time_t))..
 **                                                                             *
 ** Peeter Meos, 29. January 2015                                               *
 ********************************************************************************
-
 
 v_unit_status(time_t, t_el)$(time_t_s(time_t) and ord(time_t) > 1)..
   k_alpha(time_t, t_el)
@@ -826,11 +877,11 @@ v_no_load(time_t, t_el)$(time_t_s(time_t))..
 ********************************************************************************
 
 v_lambda_z(time_t, slot, t_el, k, feedstock)$(time_t_s(time_t)
-                                                  and not sameas(t_el, "Katlamaja")
-                                                                    and max_ratio(k, feedstock, t_el)>0
-                                                                    )..
+                                      and not sameas(t_el, "Katlamaja")
+                                      and max_ratio(k, feedstock, t_el)
+                                                                   )..
   sum((para_lk, k_level, l_level)$(ord(para_lk) > 1), lambda_e(time_t, slot, t_el,
-                                            k, feedstock, k_level, l_level, para_lk))
+                                        k, feedstock, k_level, l_level, para_lk))
   =e=
   k_alpha(time_t, t_el)
 ;

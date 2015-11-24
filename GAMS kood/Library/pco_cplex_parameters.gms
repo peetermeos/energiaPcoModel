@@ -1,7 +1,11 @@
 File C_OPT cplex option file  / cplex.opt /;
 Put C_OPT;
 Put      'barobjrng=1E75' /
+$ifthen.two "%debug%" = "true"
+         'names=yes'/
+$else.two
          'names=no'/
+$endif.two
          'heurfreq=100'/
          'lpmethod=4'/
          'memoryemphasis=0'/
@@ -10,6 +14,7 @@ Put      'barobjrng=1E75' /
          'prepass=50'/
          'startalg=4'/
          'subalg=4'/
+         'scaind=1'/
 $if not "%numsim%" == "1"   'barcrossalg=-1'/
 $if     "%numsim%" == "1"   'barcrossalg=-1'/
 $ifthen.pq "%nk%" == "true"

@@ -13,7 +13,7 @@ sum((year, month, slot, t_el)$y_m_t,
         sum(em$(not sameas(em, "jv")), sum((feedstock, k)$(max_ratio(k, feedstock, t_el) > 0),
                         em_level_el(time_t, slot, em, k, feedstock, t_el) *
                         slot_length(time_t, slot, t_el)) *
-                        em_tariff(em, year)
+                        em_tariff(em, year) 
            )
 )
 

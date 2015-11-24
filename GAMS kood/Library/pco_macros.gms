@@ -52,12 +52,12 @@ $macro to_production_s(sim, time_t, k, feedstock, t)                           \
 **                                                                             *
 ********************************************************************************
 $macro   q(time_t, slott, k, feedstock, t_el)                                  \
-    sum(para_lk, z_emission(time_t, slott, k, feedstock, t_el, para_lk))       \
-    $(max_ratio(k, feedstock, t_el)>0)
+   (sum(para_lk, z_emission(time_t, slott, k, feedstock, t_el, para_lk))       \
+    $(max_ratio(k, feedstock, t_el)))
 
 $macro   q_s(sim, time_t, slott, k, feedstock, t_el)                           \
-    sum(para_lk, z_emission_l(sim, time_t, slott, k, feedstock, t_el, para_lk))\
-    $(max_ratio(k, feedstock, t_el)>0)
+   (sum(para_lk, z_emission_l(sim, time_t, slott, k, feedstock, t_el, para_lk))\
+    $(max_ratio(k, feedstock, t_el)))
 
 ********************************************************************************
 *                                                                              *
@@ -79,13 +79,18 @@ $macro q_out(time_t, slot, t_el)                                               \
 * Amount of heat entering a turbine
 $macro q_in(time_t, slott, t_el)                                               \
             lambda_p(time_t, slott, t_el)                                      \
-         * (eff_lookup(t_el, "4", "b"))
+         * sum(eff_lk$(ord(eff_lk) = card(eff_lk)),                            \
+                       eff_lookup(t_el, eff_lk, "b"))
 
-* Net power load of a turbine (ie output power)
 $macro net_load_el(time_t, slot, t_el)                                         \
-            lambda_p(time_t, slot, t_el)                                       \
-         * (eff_lookup(t_el, "4", "a"))                                        \
-          - k_alpha(time_t, t_el) * turbine_loss(t_el)
+            ((lambda_p(time_t, slot, t_el)                                     \
+         * sum(eff_lk$(ord(eff_lk) = card(eff_lk)),                            \
+                                eff_lookup(t_el, eff_lk, "b"))                 \
+         * est_eff(t_el))                                                      \
+         - k_alpha(time_t, t_el) * est_loss(t_el))
+
+$macro max_eff(t_el, para_kt) sum(eff_lk$(ord(eff_lk) = card(eff_lk)),         \
+                   eff_lookup(t_el, eff_lk, para_kt))
 
 ********************************************************************************
 **                                                                             *

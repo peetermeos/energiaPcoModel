@@ -1,8 +1,8 @@
 * CO2 liigub 3 kuni 9 0.5 sammuga
 * Elekter liigub 30 kuni 40 0.5 sammuga
 
-Set run_co       /1 * 15/;
-Set run_el       /1 * 30 /;
+Set run_co       /1 * 41/;
+Set run_el       /1 * 61 /;
 *Set sim          /1 * 161/;      // 7 * 23 = 161
 Set sim_el_co(sim, run_el, run_co)  /#sim:(#run_el.#run_co)/;
 Set sim_subset(sim);
@@ -21,15 +21,15 @@ Parameter
   h_co(sim)
   h_el(sim)
   avg_el(year, month)
-  v_sales_m2(sim, year, month, k, feedstock, t_mk)
+  load_el_l(sim, time_t, slot, t_el)
   t_run(run_el, run_co, year, month)
   t_run_p(run_el, run_co, year, month, t_el)
   t_run_c(run_el, run_co, year, month, t_el)
   t_op_price(run_el, run_co, year, month)
 ;
 
-h_co(sim) = sum((run_el, run_co)$sim_el_co(sim, run_el, run_co), 3  + (ord(run_co) - 1) * 0.5);
-h_el(sim) = sum((run_el, run_co)$sim_el_co(sim, run_el, run_co), 30 + (ord(run_el) - 1) * 0.5);
+h_co(sim) = sum((run_el, run_co)$sim_el_co(sim, run_el, run_co), 5  + (ord(run_co) - 1) * 0.25);
+h_el(sim) = sum((run_el, run_co)$sim_el_co(sim, run_el, run_co), 27 + (ord(run_el) - 1) * 0.25);
 
 avg_el(year, month)$(sum((time_t, slot)$y_m_t, 1) > 0)
      = sum((time_t, slot)$y_m_t, el_price_slot(time_t, slot)) / sum((time_t, slot)$y_m_t, 1);
@@ -41,9 +41,9 @@ el_price_slot_s(sim, time_t, slot)$(sum((year, month)$y_m_t, avg_el(year, month)
 
 *concentrate_price(year) = 0;
 
-max_mining_cap("%n_source%", "%nk%", year, month) = 50000 / cv("%nk%", "%n_source%", "MWh");
-contract(serial, year, month, "%n_source%", "%nk%", "kogus") = 0;
-fs_vc("%n_source%", "%nk%", year) = 0;
+*max_mining_cap("%n_source%", "%nk%", year, month) = 50000 / cv("%nk%", "%n_source%", "MWh");
+*contract(serial, year, month, "%n_source%", "%nk%", "kogus") = 0;
+*fs_vc("%n_source%", "%nk%", year) = 0;
 
 Model pco /all/;
 
@@ -58,12 +58,48 @@ Set dict /
      sim_subset.            scenario.             ""
      el_price_slot.         param.                el_price_slot_s
      co2_price.             param.                co2_price_s
-     v_sales.               marginal.             v_sales_m2
+     load_el.               level.                load_el_l
          /;
 
 *Solve pco maximizing total_profit using mip scenario dict;
 $libinclude pco_guss_grid
-t_run(run_el, run_co, year, month) = smax((sim, time_t)$(y_m_t and sim_el_co(sim, run_el, run_co)), v_k_fs_max_acq.m(time_t, "%nk%"));
+
+**********************
+t_production_slot.l(sim, time_t, slot, t, product)
+=
+ sum(t_el$sameas(t_el, t), load_el_l(sim, time_t, slot, t_el) * slot_length_s(sim, time_t, slot, t))$sameas(product, "Elekter")
+;
+
+t_production_day.l(sim, time_t, t, product)
+=
+  sum(slot, t_production_slot.l(sim, time_t, slot, t, product))
+;
+
+t_production_month.l(sim, year, quarter, month, t, product)$q_months(quarter, month)
+=
+ sum(time_t$y_m_t, t_production_day.l(sim, time_t, t, product))
+;
+
+t_production_tech_month.l(sim, year, quarter, month, tech, t, product)$t_tech(tech, t)
+=
+  t_production_month.l(sim, year, quarter, month, t, product)
+;
+
+t_production_year.l(sim, year, t, product)
+=
+sum((month, quarter)$q_months(quarter, month),
+  t_production_month.l(sim, year, quarter, month, t, product))
+;
+**********************
+
+t_run(run_el, run_co, year, month) = smax((sim, time_t, t, quarter)$(y_m_t
+                                            and q_months(quarter, month)
+                                            and sim_el_co(sim, run_el, run_co)),
+                 t_production_month.l(sim, year, quarter, month, t, "Elekter") );
+
+t_run(run_el, run_co, year, month)$(t_run(run_el, run_co, year, month) < 0) = 0;
+
+* t_run(run_el, run_co, year, month) = smax((sim, time_t)$(y_m_t and sim_el_co(sim, run_el, run_co)), v_k_fs_max_acq.m(time_t, "%nk%"));
 * t_run(run_el, run_co, year, month) = -smax(sim$sim_el_co(sim, run_el, run_co), v_sales_m2(sim, year, month, "Estonia", "Tykikivi", "VKG"));
 
 $ontext

@@ -12,7 +12,12 @@ Model pco /all/;
 pco.OptFile   = 1;
 pco.PriorOpt  = 1;
 pco.HoldFixed = 1;
+$ifthen.two "%debug%" = "true"
+pco.dictfile  = 1;
+$else.two
 pco.dictfile  = 0;
+$endif.two
+pco.scaleopt  = 1 ;
 
 $ifthen.s "%numsim%" == "1"
   pco.SolveLink = 0;

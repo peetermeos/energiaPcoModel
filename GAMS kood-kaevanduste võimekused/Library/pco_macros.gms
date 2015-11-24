@@ -1,3 +1,4 @@
+
 ********************************************************************************
 **                                                                             *
 ** Macro definitions. Dangerous and powerful stuff!                            *
@@ -85,7 +86,7 @@ $macro q_in(time_t, slott, t_el)                                               \
 $macro net_load_el(time_t, slot, t_el)                                         \
             lambda_p(time_t, slot, t_el)                                       \
          * (eff_lookup(t_el, "4", "a"))                                        \
-          - k_alpha(time_t, t_el) * turbine_loss(t_el)
+          - k_alpha(time_t, t_el) * turbine_loss(t_el) 
 
 ********************************************************************************
 **                                                                             *

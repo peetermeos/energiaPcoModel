@@ -44,7 +44,7 @@ $elseif.s  set pk
   $$drop n_price_points
 
 $elseif.s  set hm
-  Set sim /1 * 450/;
+  Set sim /1 * 2501/;
 
 $elseif.s  set hm_vkg
   Set sim /1 * 900/;

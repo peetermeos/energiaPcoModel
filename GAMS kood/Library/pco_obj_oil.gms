@@ -8,9 +8,9 @@
 
     +
 * Oil production
-   sum((year, month, t_ol) $y_m_t,
-       oil(time_t, t_ol) *
-       oil_price(year, month)
+   sum(t_ol, sum((year, month)$y_m_t,
+       oil_price(year, month))
+       * oil(time_t, t_ol)
        )
 
 -

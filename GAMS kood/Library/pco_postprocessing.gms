@@ -167,6 +167,7 @@ $offtext
   t_productioncapacity_month(sim, year, quarter, month, t, product, unit)"Tootmisüksuse tootmisvõimekus kuus (MWh(küt); MWh(el), MWh(sj) või t(õli))"
 
 *Kasutegurid ja erikulud
+  avg_efficiency_slot(sim, time_t, slot, t_el) "Ploki keskmine kasutegur slotis (MWh(el)/MWh(kütus))"
   avg_efficiency_day(sim, time_t, t_el)    "Ploki keskmine kasutegur päevas (MWh(el)/MWh(kütus))"
   avg_efficiency_month(sim, year, month, t_el)"Ploki keskmine kasutegur kuus (MWh(el)/MWh(kütus))"
   avg_efficiency_year(sim, year, t_el)     "Ploki keskmine kasutegur aastas (MWh(el)/MWh(kütus))"
@@ -553,7 +554,8 @@ t_productioncapacity_slot.l(sim, time_t, slot, t, product, "MWh")
 =
   sum(t_el$(sameas(t_el, t)),
          t_productioncapacity_slot.l(sim, time_t, slot, t, product, "Toode")
-         /(sum(para_lk$(ord(para_lk) = card(para_lk)), efficiency(t_el, para_lk, "b") - efficiency_shift))
+         /(sum(eff_lk$(ord(eff_lk) = card(eff_lk)), efficiency(t_el, eff_lk, "b")
+           ))
   )$sameas(product, "Elekter")
   +
   sum(t_el$(sameas(t_el, t) and ht_efficiency(t_el) > 0),
@@ -621,7 +623,7 @@ t_production_slot.l(sim, time_t, slot, t, product)
  +
 * Retort gas in cbm
  sum(t_ol$sameas(t_ol, t),
-    sum((k, feedstock), to_production(time_t, k, feedstock, t_ol)* rg_yield(t_ol))
+    sum((k, feedstock), to_production_s(sim, time_t, k, feedstock, t_ol)* rg_yield(t_ol))
          * slot_length_s(sim, time_t, slot, t)
          / (1$(slot_length_s(sim, time_t, slot, t) = 0)
             + sum(slott2$(slot_length_s(sim, time_t, slott2, t) > 0), slot_length_s(sim, time_t, slott2, t)))
@@ -976,6 +978,20 @@ $endif.two
 ** Efficiency = Production/Primary energy                                      *
 ** macro: y_m_t                                                          *
 ********************************************************************************
+
+avg_efficiency_slot.l(sim, time_t, slot, t_el)$(slot_length(time_t, slot, t_el) and
+   sum((k, feedstock), fuel_consumption_slot(sim, time_t, slot, t_el, "Elekter", k, feedstock, "MWh")) > 0
+)
+=
+  t_production_slot.l(sim, time_t, slot, t_el, "Elekter")
+  /
+  sum((k, feedstock), fuel_consumption_slot(sim, time_t, slot, t_el, "Elekter", k, feedstock, "MWh")
+* Retort gas is already covered under fuel use.
+*  +
+*  retortgas_usage_day(sim, time_t, t_el, "MWh")
+  )
+;
+
 
 avg_efficiency_day.l(sim, time_t, t_el)$(
          sum((year, month, day, k, feedstock)$(y_m_t and day_cal(time_t, day)), fuel_consumption_day(sim, year, month, day, time_t, t_el, "Elekter", k, feedstock, "MWh")) > 0
